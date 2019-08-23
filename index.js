@@ -7,9 +7,9 @@
 
 var storage = require('@google-cloud/storage')();
 const {Spanner} = require('@google-cloud/spanner');
-const projectId = 'gcpnodeproject';
-const instanceId = 'testinstance';
-const databaseId = 'customerdb';
+const projectId = 'yourprojectid';
+const instanceId = 'yourinstanceid';
+const databaseId = 'yourdatabase';
 // Creates a client
 const spanner = new Spanner({
   projectId:projectId
