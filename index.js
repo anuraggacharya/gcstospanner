@@ -7,9 +7,9 @@
 
 var storage = require('@google-cloud/storage')();
 const {Spanner} = require('@google-cloud/spanner');
-const projectId = 'yourprojectid';
-const instanceId = 'yourinstanceid';
-const databaseId = 'yourdatabase';
+const projectId = 'gcpnodeproject';
+const instanceId = 'testinstance';
+const databaseId = 'customerdb';
 // Creates a client
 const spanner = new Spanner({
   projectId:projectId
@@ -19,10 +19,10 @@ const spanner = new Spanner({
 const instance = spanner.instance(instanceId);
 const database = instance.database(databaseId);	
 const customerTable = database.table('customerTable');
-
-
 var csv = require('fast-csv');
 var dataArray=[]
+
+
 exports.helloGCS = (event, context) => {
    var datastream=storage
   .bucket('testbucketforpoc')
@@ -33,10 +33,12 @@ exports.helloGCS = (event, context) => {
   .on('data',function(data){
     dataArray.push(data);
   })
-  .on('end',async function(data){
-      console.log("Reading Completed.");
-      console.log(dataArray);
-      console.log(dataArray.length);
+  .on('end',()=>{
+  	  console.log(dataArray);
+      console.log('Rows processed'+dataArray.length);
+  });
+  async function upload(){
+      console.log("Reading Completed. Now Inserting.");
       try {
       await customerTable.insert(dataArray);
       console.log('Inserted data.');
@@ -47,5 +49,6 @@ exports.helloGCS = (event, context) => {
       finally {
       await database.close();
       }
-  })
+  }
+  upload();
 };
