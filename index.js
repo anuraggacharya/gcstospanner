@@ -7,9 +7,12 @@
 
 var storage = require('@google-cloud/storage')();
 const {Spanner} = require('@google-cloud/spanner');
-const projectId = 'gcpnodeproject';
-const instanceId = 'testinstance';
-const databaseId = 'customerdb';
+var csv = require('fast-csv');
+
+const projectId = 'yourprojectid';
+const instanceId = 'yourinstanceid';
+const databaseId = 'yourdbid';
+
 // Creates a client
 const spanner = new Spanner({
   projectId:projectId
@@ -19,9 +22,9 @@ const spanner = new Spanner({
 const instance = spanner.instance(instanceId);
 const database = instance.database(databaseId);	
 const customerTable = database.table('customerTable');
-var csv = require('fast-csv');
-var dataArray=[]
 
+var dataArray=[];
+var output={};
 
 exports.helloGCS = (event, context) => {
    var datastream=storage
@@ -35,13 +38,14 @@ exports.helloGCS = (event, context) => {
   })
   .on('end',()=>{
   	  console.log(dataArray);
-      console.log('Rows processed'+dataArray.length);
+      output['Rows processed']=dataArray.length;
+      console.log(output);
   });
   async function upload(){
-      console.log("Reading Completed. Now Inserting.");
+      console.log("Reading Completed. Now Inserting...");
       try {
       await customerTable.insert(dataArray);
-      console.log('Inserted data.');
+      console.log('Insert Complete.');
       } 
       catch (err) {
       console.error('THIS IS THE ERROR:', err);
