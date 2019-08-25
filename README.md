@@ -7,6 +7,16 @@ A specific csv file is streamed, parsed and finally inserted into Spanner, a RDB
 
 * Create a bucket on GCS on which we want to create a trigger.
 * Create a Spanner Instance,Database and Table with required schema.
+```
+CREATE TABLE customerTable (
+	ID STRING(MAX) NOT NULL,
+	ADDRESS STRING(MAX) NOT NULL,
+	AGE STRING(MAX) NOT NULL,
+	NAME STRING(MAX) NOT NULL,
+	PHONE STRING(MAX) NOT NULL,
+) PRIMARY KEY (ID)
+
+```
 * Create Cloud Function which will executed when triggered. 
 
 ### Prerequisites
